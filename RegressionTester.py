@@ -4,18 +4,23 @@ from pprint import pprint
 
 if __name__ == "__main__":
 
-    with open('amzn_hist_test.csv') as csvfile:
-        priceList = csv.DictReader(csvfile)
-        #for row in priceList:
+    with open('amzn_hist_test.csv', 'r') as csvfile:
+        priceIter = csv.DictReader(csvfile)
+        priceList = list(priceIter)     #convert iterable into list of dictionaries
+        #for row in priceIter:
         #   print(row)
 
-    with open ('Option_Exp_dates_Test.csv') as csvfile2:
+    with open ('Option_Exp_dates_Test.csv', 'r') as csvfile2:
         optionExp = csv.DictReader(csvfile2)
-        for row in optionExp:
-            pprint(row)
+        optionExpList = list(optionExp)   #convert iterable into list of Dictionaries
+        # for row in optionExp:
+        #   print(row)
 
-    #pprint(optionExp['TradeDate'])
-    #startDate=optionExp['TradeDay']
-    #pprint(startDate)
+    #first trade date in regression
+    startDate = optionExpList[0]['TradeDate']
 
-    #why is this modifying my OptionExp csv, merging cell date
+    listLen=len(optionExpList)
+
+    #last expiration date in regression
+    lastDay = optionExpList[listLen-1]['Exp Day']
+
