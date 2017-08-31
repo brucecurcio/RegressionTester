@@ -1,6 +1,18 @@
 import csv
 import os
 from pprint import pprint
+from datetime import datetime
+
+def convert_date (rawDate):
+    if '-' in rawDate:
+        rawDate.replace("'","")
+        #pprint(rawDate)
+        newDate = datetime.strptime(rawDate, "%Y-%m-%d")
+
+    else:
+        newDate = datetime.strptime(rawDate, "%m/%d/%Y")
+
+    return newDate
 
 if __name__ == "__main__":
 
@@ -17,10 +29,30 @@ if __name__ == "__main__":
         #   print(row)
 
     #first trade date in regression
-    startDate = optionExpList[0]['TradeDate']
+    startDateString = optionExpList[0]['TradeDate']
+    startDate = convert_date(startDateString)
+    #pprint(startDate)
 
-    listLen=len(optionExpList)
+
+    optListLen=len(optionExpList)
 
     #last expiration date in regression
-    lastDay = optionExpList[listLen-1]['Exp Day']
+    lastDayString = optionExpList[optListLen-1]['Exp Day']
+    lastDay = convert_date(lastDayString)
+    #pprint(lastDay)
+
+    priceListLen = len(priceList)
+
+    counter=0
+
+    while counter < priceListLen:
+        pl = convert_date(priceList[counter]['date'])
+        if startDate != pl:
+            counter+=1
+        else:
+            startDateLow = pl
+            pprint(startDateLow)
+            break
+
+    #pprint(startDateLow)
 
