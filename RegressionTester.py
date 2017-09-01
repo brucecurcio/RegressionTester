@@ -1,12 +1,10 @@
 import csv
 import os
 from pprint import pprint
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def convert_date (rawDate):
     if '-' in rawDate:
-        rawDate.replace("'","")
-        #pprint(rawDate)
         newDate = datetime.strptime(rawDate, "%Y-%m-%d")
 
     else:
@@ -29,30 +27,44 @@ if __name__ == "__main__":
         #   print(row)
 
     #first trade date in regression
-    startDateString = optionExpList[0]['TradeDate']
-    startDate = convert_date(startDateString)
-    #pprint(startDate)
-
+    startDate = convert_date(optionExpList[0]['TradeDate'])
 
     optListLen=len(optionExpList)
 
     #last expiration date in regression
-    lastDayString = optionExpList[optListLen-1]['Exp Day']
-    lastDay = convert_date(lastDayString)
-    #pprint(lastDay)
+    lastDay = convert_date(optionExpList[optListLen-1]['Exp Day'])
 
     priceListLen = len(priceList)
 
-    counter=0
+    pl_counter=0
 
-    while counter < priceListLen:
-        pl = convert_date(priceList[counter]['date'])
-        if startDate != pl:
-            counter+=1
+    #find the low price of stock the first trading day after the first exp
+    while pl_counter < priceListLen:
+        if startDate != convert_date(priceList[pl_counter]['date']):
+            pl_counter+=1
         else:
-            startDateLow = pl
-            pprint(startDateLow)
+            startDateLow = priceList[pl_counter]['low']
             break
 
-    #pprint(startDateLow)
+    sellPrem = round(float(startDateLow)*.1,2)  #premium collected for sale of put
+    putStrike= int((int(float(startDateLow))-5)/5*5)    #strike price that is $5 below market value
+    ownStock = 'no'
+    acct_balance = sellPrem
+
+    exp_counter=1
+    nextExpDay=convert_date(optionExpList[exp_counter]['Exp Day'])
+
+    while convert_date(priceList[pl_counter]['date']) <= nextExpDay:
+        if priceList[pl_counter]['low'] < putStrike*.9:
+            #buy put back, subtract premium+10% loss; need a better estimate here; will tune so that losses will decrease
+            #as we get closer to expiration; maybe 10% to start and then decrease to 1% as we get closer to expiration
+        pl_counter+=pl_counter
+
+
+
+
+
+    NextDay=startDate+timedelta(days=1)
+    pprint(NextDay)
+
 
