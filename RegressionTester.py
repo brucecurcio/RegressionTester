@@ -35,13 +35,13 @@ if __name__ == "__main__":
     lastDay = convert_date(optionExpList[optListLen-1]['Exp Day'])
 
     priceListLen = len(priceList)
+    # pprint(priceListLen)
 
     pl_counter=0
-
     #find the low price of stock the first trading day after the first exp
     while pl_counter < priceListLen:
         if startDate != convert_date(priceList[pl_counter]['date']):
-            pl_counter+=1
+            pl_counter += 1
         else:
             startDateLow = priceList[pl_counter]['low']
             break
@@ -53,18 +53,21 @@ if __name__ == "__main__":
 
     exp_counter=1
     nextExpDay=convert_date(optionExpList[exp_counter]['Exp Day'])
+    #pprint(pl_counter)
 
     while convert_date(priceList[pl_counter]['date']) <= nextExpDay:
-        if priceList[pl_counter]['low'] < putStrike*.9:
-            #buy put back, subtract premium+10% loss; need a better estimate here; will tune so that losses will decrease
-            #as we get closer to expiration; maybe 10% to start and then decrease to 1% as we get closer to expiration
-        pl_counter+=pl_counter
-
-
-
-
+        pprint(convert_date(priceList[pl_counter]['date']) <= nextExpDay)
+        if float(priceList[pl_counter]['low']) < putStrike * .9:
+            # buy put back, subtract premium+10% loss; need a better estimate here; will tune so that losses will decrease
+            # as we get closer to expiration; maybe 10% to start and then decrease to 1% as we get closer to expiration
+            acct_balance=acct_balance-2*sellPrem
+            break
+        else:
+            pl_counter += 1
+            #pprint(pl_counter)
+            #pprint(convert_date(priceList[pl_counter]['date']))
 
     NextDay=startDate+timedelta(days=1)
-    pprint(NextDay)
+    # pprint(NextDay)
 
 
